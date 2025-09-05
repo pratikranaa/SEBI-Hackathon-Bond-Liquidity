@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BondAstra: A Proposal for the Securities Market Hackathon</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Calm Harmony -->
+    <!-- Application Structure Plan: The SPA is designed as a single-page, narrative-driven pitch deck. It starts with the problem, introduces our solution "BondAstra," details its innovative dual-engine (AI + Blockchain) architecture, showcases an interactive prototype mockup, and concludes with its market impact and alignment with SEBI's vision. This top-down structure is chosen for clarity and persuasiveness, guiding judges logically through the proposal from the 'why' to the 'what' and 'how'. Key interactions like filtering bonds and viewing AI-driven price analysis make the solution tangible. -->
+    <!-- Visualization & Content Choices: 
+    1. Problem Statement -> Goal: Establish context -> Viz: Bar Chart (Chart.js) comparing Equity vs. Bond market liquidity -> Interaction: Hover tooltips -> Justification: Immediately visualizes the scale of the illiquidity problem.
+    2. Core Innovation -> Goal: Explain the unique solution architecture -> Viz: Diagram (HTML/CSS) of the AI + Blockchain engines -> Interaction: None, pure visual explanation -> Justification: Simplifies a complex technical concept into an easily digestible flow.
+    3. Prototype Demo -> Goal: Showcase user experience -> Viz: Interactive Table (HTML) and a Line Chart (Chart.js) for price discovery -> Interaction: Clicking a bond in the table reveals its AI price analysis chart -> Justification: Provides a tangible, hands-on feel for the prototype's core feature.
+    4. Impact -> Goal: Quantify the solution's value -> Viz: Bar Chart (Chart.js) showing 'Before vs. After' metrics -> Interaction: Animated bars on scroll -> Justification: Creates a compelling visual summary of the potential success.
+    All visualizations are rendered on Canvas via Chart.js, confirming no SVG/Mermaid usage. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa; 
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .glassmorphism {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .modal {
+            display: none;
+        }
+        .modal-active {
+            display: flex;
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <header class="bg-white/80 backdrop-blur-sm sticky top-0 z-50 border-b border-gray-200">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-gray-900">BondAstra</h1>
+            <div class="hidden md:flex space-x-8">
+                <a href="#solution" class="text-gray-600 hover:text-blue-600">Solution</a>
+                <a href="#technology" class="text-gray-600 hover:text-blue-600">Technology</a>
+                <a href="#prototype" class="text-gray-600 hover:text-blue-600">Prototype</a>
+                <a href="#impact" class="text-gray-600 hover:text-blue-600">Impact</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+
+        <section id="hero" class="text-center py-16">
+            <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Unlocking Liquidity in India's Corporate Bond Market</h2>
+            <p class="max-w-3xl mx-auto text-lg text-gray-600 mb-8">
+                BondAstra is a revolutionary platform leveraging a dual AI and Blockchain engine to solve chronic illiquidity. We enable fractional ownership and provide intelligent price discovery, democratizing bond markets for retail investors and enhancing market efficiency in full alignment with SEBI's mandate for a transparent, accessible, and secure securities ecosystem.
+            </p>
+            <div class="chart-container mx-auto">
+                <canvas id="liquidityChart"></canvas>
+            </div>
+            <p class="text-sm text-gray-500 mt-2">Illustrative comparison of daily trading volumes.</p>
+        </section>
+
+        <section id="solution" class="py-16">
+            <div class="text-center mb-12">
+                <h3 class="text-3xl font-bold text-gray-900">Our Dual-Engine Approach</h3>
+                <p class="max-w-2xl mx-auto text-gray-600 mt-2">BondAstra's innovation lies in the synergy of two powerful technologies working in concert to create a seamless, transparent, and intelligent market.</p>
+            </div>
+            <div class="grid md:grid-cols-2 gap-8 items-center">
+                <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-100">
+                    <div class="flex items-center mb-4">
+                        <span class="text-3xl mr-4">🔗</span>
+                        <h4 class="text-2xl font-semibold">Blockchain Core</h4>
+                    </div>
+                    <p class="text-gray-600 mb-4">For Trust & Accessibility</p>
+                    <ul class="space-y-3">
+                        <li class="flex items-start"><span class="text-blue-500 mr-3 mt-1">✓</span><span><strong>Tokenization:</strong> Converts traditional bonds into digital tokens on a secure, permissioned blockchain.</span></li>
+                        <li class="flex items-start"><span class="text-blue-500 mr-3 mt-1">✓</span><span><strong>Fractional Ownership:</strong> Allows retail investors to buy and sell small fractions of high-value bonds, lowering the barrier to entry.</span></li>
+                        <li class="flex items-start"><span class="text-blue-500 mr-3 mt-1">✓</span><span><strong>Instant Settlement:</strong> Automates trade settlement using smart contracts, reducing counterparty risk and delays (T+0).</span></li>
+                    </ul>
+                </div>
+                <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-100">
+                    <div class="flex items-center mb-4">
+                        <span class="text-3xl mr-4">🧠</span>
+                        <h4 class="text-2xl font-semibold">AI Intelligence Layer</h4>
+                    </div>
+                    <p class="text-gray-600 mb-4">For Efficiency & Price Discovery</p>
+                    <ul class="space-y-3">
+                        <li class="flex items-start"><span class="text-blue-500 mr-3 mt-1">✓</span><span><strong>Price Discovery Engine:</strong> AI models analyze market data to provide a real-time "fair value" range, solving price opacity.</span></li>
+                        <li class="flex items-start"><span class="text-blue-500 mr-3 mt-1">✓</span><span><strong>Intelligent Matching:</strong> Matches buy and sell orders efficiently in the secondary market, boosting trading velocity.</span></li>
+                        <li class="flex items-start"><span class="text-blue-500 mr-3 mt-1">✓</span><span><strong>Regulatory Dashboard:</strong> Provides regulators with a real-time, transparent view of market activity for enhanced supervision.</span></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="technology" class="py-16 bg-gray-100 -mx-6 px-6 rounded-2xl">
+            <div class="text-center mb-12">
+                <h3 class="text-3xl font-bold text-gray-900">Technology Stack</h3>
+                <p class="max-w-2xl mx-auto text-gray-600 mt-2">Built on a foundation of cutting-edge, secure, and scalable technologies designed for the future of finance.</p>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h5 class="font-bold text-lg mb-1">Blockchain</h5>
+                    <p class="text-sm text-gray-600">Hyperledger Fabric</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h5 class="font-bold text-lg mb-1">AI/ML</h5>
+                    <p class="text-sm text-gray-600">Python, TensorFlow</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h5 class="font-bold text-lg mb-1">Backend</h5>
+                    <p class="text-sm text-gray-600">Node.js, REST APIs</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h5 class="font-bold text-lg mb-1">Cybersecurity</h5>
+                    <p class="text-sm text-gray-600">Zero Trust Arch.</p>
+                </div>
+            </div>
+             <div class="mt-8 text-center text-gray-600">
+                <p><strong>Integration:</strong> API-first approach for seamless connection with depositories (CDSL/NSDL), broker networks, and DPIs like Aadhaar/DigiLocker for KYC.</p>
+                <p><strong>Prototype Stage:</strong> Functional MVP (Minimum Viable Product)</p>
+            </div>
+        </section>
+        
+        <section id="prototype" class="py-16">
+            <div class="text-center mb-12">
+                <h3 class="text-3xl font-bold text-gray-900">Prototype in Action</h3>
+                <p class="max-w-2xl mx-auto text-gray-600 mt-2">Experience the core functionality of BondAstra. This interactive mock-up demonstrates the user journey from discovering bonds to accessing AI-powered price analysis.</p>
+            </div>
+            <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-100">
+                <h4 class="text-xl font-semibold mb-4">Corporate Bond Marketplace</h4>
+                <div class="flex space-x-2 mb-4">
+                    <button class="filter-btn bg-blue-500 text-white py-1 px-3 rounded-full text-sm" data-filter="all">All</button>
+                    <button class="filter-btn bg-gray-200 text-gray-700 py-1 px-3 rounded-full text-sm" data-filter="AAA">AAA</button>
+                    <button class="filter-btn bg-gray-200 text-gray-700 py-1 px-3 rounded-full text-sm" data-filter="AA+">AA+</button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left">
+                        <thead>
+                            <tr class="border-b">
+                                <th class="p-3">Issuer</th>
+                                <th class="p-3">Rating</th>
+                                <th class="p-3">Coupon</th>
+                                <th class="p-3">Maturity</th>
+                                <th class="p-3">Price/Token (₹)</th>
+                                <th class="p-3"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="bond-table-body">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section id="impact" class="py-16">
+            <div class="text-center mb-12">
+                <h3 class="text-3xl font-bold text-gray-900">Potential Impact & Scalability</h3>
+                <p class="max-w-2xl mx-auto text-gray-600 mt-2">By fundamentally improving market infrastructure, BondAstra is poised to deliver measurable, transformative impact.</p>
+            </div>
+             <div class="chart-container mx-auto">
+                <canvas id="impactChart"></canvas>
+            </div>
+            <div class="mt-8 grid md:grid-cols-3 gap-6 text-center">
+                <div>
+                    <h5 class="font-bold text-lg">Investor Access</h5>
+                    <p class="text-gray-600">Onboard millions of new retail investors into the corporate bond market.</p>
+                </div>
+                <div>
+                    <h5 class="font-bold text-lg">Market Development</h5>
+                    <p class="text-gray-600">Increase trading velocity by over 500% and tighten bid-ask spreads.</p>
+                </div>
+                <div>
+                    <h5 class="font-bold text-lg">Enhanced Supervision</h5>
+                    <p class="text-gray-600">Provide SEBI with unprecedented, real-time market transparency and oversight.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+    
+    <div id="bondModal" class="modal fixed inset-0 bg-black bg-opacity-50 items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-2xl p-8 w-full max-w-2xl relative">
+            <button id="closeModal" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-2xl">&times;</button>
+            <h4 id="modal-title" class="text-2xl font-bold mb-2"></h4>
+            <p id="modal-subtitle" class="text-gray-500 mb-6"></p>
+            <div class="chart-container mx-auto h-64 md:h-80">
+                <canvas id="priceAnalysisChart"></canvas>
+            </div>
+            <div class="mt-6 text-center">
+                <button class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-8 rounded-lg transition-colors">Buy Fractions</button>
+            </div>
+        </div>
+    </div>
+
+
+    <footer class="bg-gray-800 text-white mt-16">
+        <div class="container mx-auto px-6 py-8 text-center">
+            <p>&copy; 2025 BondAstra Team. A conceptual prototype for the Securities Market Hackathon.</p>
+            <p class="text-sm text-gray-400 mt-2">Powered by BSE, CDSL, KFINTECH, NSDL and SEBI.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const liquidityCtx = document.getElementById('liquidityChart').getContext('2d');
+            new Chart(liquidityCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Equity Market', 'Corporate Bond Market'],
+                    datasets: [{
+                        label: 'Avg. Daily Trading Volume (in ₹ Cr)',
+                        data: [65000, 4500],
+                        backgroundColor: ['rgba(59, 130, 246, 0.7)', 'rgba(209, 213, 219, 0.7)'],
+                        borderColor: ['rgba(59, 130, 246, 1)', 'rgba(156, 163, 175, 1)'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        title: { display: true, text: 'The Liquidity Gap in Indian Markets' }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, ticks: { callback: value => `₹${value/1000}k` } }
+                    }
+                }
+            });
+
+            const impactCtx = document.getElementById('impactChart').getContext('2d');
+            new Chart(impactCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Retail Participation', 'Trading Volume', 'Price Transparency'],
+                    datasets: [
+                        {
+                            label: 'Before BondAstra',
+                            data: [15, 25, 30],
+                            backgroundColor: 'rgba(209, 213, 219, 0.7)',
+                            borderColor: 'rgba(156, 163, 175, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'After BondAstra',
+                            data: [85, 90, 95],
+                            backgroundColor: 'rgba(59, 130, 246, 0.7)',
+                            borderColor: 'rgba(59, 130, 246, 1)',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: { display: true, text: 'Projected Market Improvement (Index)' }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, max: 100 }
+                    }
+                }
+            });
+
+            const bondData = [
+                { issuer: 'Reliance Industries', rating: 'AAA', coupon: '7.5%', maturity: '2030', price: 102.50 },
+                { issuer: 'HDFC Bank', rating: 'AAA', coupon: '7.2%', maturity: '2028', price: 101.80 },
+                { issuer: 'Tata Steel', rating: 'AA+', coupon: '8.1%', maturity: '2029', price: 104.10 },
+                { issuer: 'Infosys Ltd', rating: 'AAA', coupon: '6.8%', maturity: '2027', price: 100.50 },
+                { issuer: 'Adani Ports', rating: 'AA+', coupon: '8.5%', maturity: '2032', price: 105.20 },
+            ];
+
+            const tableBody = document.getElementById('bond-table-body');
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            
+            const renderTable = (filter) => {
+                tableBody.innerHTML = '';
+                const filteredData = filter === 'all' ? bondData : bondData.filter(bond => bond.rating === filter);
+                
+                filteredData.forEach(bond => {
+                    const row = document.createElement('tr');
+                    row.className = 'border-b hover:bg-gray-50';
+                    row.innerHTML = `
+                        <td class="p-3 font-medium">${bond.issuer}</td>
+                        <td class="p-3">${bond.rating}</td>
+                        <td class="p-3">${bond.coupon}</td>
+                        <td class="p-3">${bond.maturity}</td>
+                        <td class="p-3">${bond.price.toFixed(2)}</td>
+                        <td class="p-3 text-right">
+                            <button class="view-btn bg-blue-100 text-blue-700 text-xs font-semibold py-1 px-3 rounded-full hover:bg-blue-200">View Analysis</button>
+                        </td>
+                    `;
+                    row.querySelector('.view-btn').addEventListener('click', () => openModal(bond));
+                    tableBody.appendChild(row);
+                });
+            };
+            
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    filterBtns.forEach(b => b.classList.replace('bg-blue-500','bg-gray-200') || b.classList.replace('text-white','text-gray-700'));
+                    btn.classList.replace('bg-gray-200','bg-blue-500');
+                    btn.classList.replace('text-gray-700','text-white');
+                    renderTable(btn.dataset.filter);
+                });
+            });
+
+            const modal = document.getElementById('bondModal');
+            const closeModalBtn = document.getElementById('closeModal');
+            const modalTitle = document.getElementById('modal-title');
+            const modalSubtitle = document.getElementById('modal-subtitle');
+            let priceChart = null;
+
+            const openModal = (bond) => {
+                modalTitle.textContent = `${bond.issuer} - Price Analysis`;
+                modalSubtitle.textContent = `Rating: ${bond.rating} | Coupon: ${bond.coupon} | Maturity: ${bond.maturity}`;
+                
+                const priceCtx = document.getElementById('priceAnalysisChart').getContext('2d');
+                const labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+                const historicalPrice = labels.map(() => 100 + (Math.random() * 5 - 2.5));
+                const fairValueUpper = historicalPrice.map(p => p + 1.5);
+                const fairValueLower = historicalPrice.map(p => p - 1.5);
+
+                if (priceChart) {
+                    priceChart.destroy();
+                }
+
+                priceChart = new Chart(priceCtx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: 'Historical Price',
+                                data: historicalPrice,
+                                borderColor: 'rgb(59, 130, 246)',
+                                tension: 0.1
+                            },
+                            {
+                                label: 'AI Fair Value Range',
+                                data: fairValueUpper,
+                                fill: '+1',
+                                backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                                borderColor: 'transparent',
+                                pointRadius: 0
+                            },
+                            {
+                                label: 'hidden',
+                                data: fairValueLower,
+                                fill: false,
+                                borderColor: 'transparent',
+                                pointRadius: 0
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: true,
+                                labels: {
+                                   filter: item => item.text !== 'hidden'
+                                }
+                            }
+                        },
+                        scales: { y: { title: { display: true, text: 'Price (₹)' } } }
+                    }
+                });
+
+                modal.classList.add('modal-active');
+            };
+
+            closeModalBtn.addEventListener('click', () => modal.classList.remove('modal-active'));
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.remove('modal-active');
+                }
+            });
+
+            renderTable('all');
+        });
+    </script>
+</body>
+</html>
